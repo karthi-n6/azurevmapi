@@ -1,0 +1,60 @@
+name: AI Terraform Code Generator
+
+on:
+  workflow_dispatch:   # run manually from GitHub Actions tab
+  issue_comment:       # or trigger from comments like /create-vm
+    types: [created]
+
+jobs:
+  ai:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip
+          pip3 install openai
+
+      - name: Run AI to generate VM code
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python3 << 'EOF'
+          import openai, os
+
+          openai.api_key = os.getenv("OPENAI_API_KEY")
+
+          # Prompt AI to generate Terraform for an Ubuntu VM
+          prompt = """
+          Write Terraform code to add a new Ubuntu Linux VM in Azure.
+          Use resource group: rg-ubuntu-vm
+          VM size: Standard_B1s
+          Ubuntu version: 20.04 LTS
+          """
+
+          response = openai.ChatCompletion.create(
+              model="gpt-4o-mini",   # or your Azure OpenAI deployment name
+              messages=[{"role": "user", "content": prompt}],
+              temperature=0.2
+          )
+
+          code = response["choices"][0]["message"]["content"]
+
+          # Save output to vm.tf
+          with open("vm.tf", "w") as f:
+              f.write(code)
+
+          print("Terraform code generated and saved to vm.tf")
+          EOF
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "karthi-n6"
+          git config --global user.email "kartn123@gmail.com"
+          git add vm.tf
+          git commit -m "AI: add Ubuntu VM"
+          git push
