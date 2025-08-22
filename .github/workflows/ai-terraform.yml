@@ -52,7 +52,7 @@ jobs:
           """
 
           response = client.chat.completions.create(
-              model="gpt-4o-mini",  # or your Azure OpenAI deployment name
+              model="gpt-3.5-turbo",  # or your Azure OpenAI deployment name
               messages=[{"role": "user", "content": prompt}],
               temperature=0.2
           )
