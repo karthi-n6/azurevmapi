@@ -24,6 +24,8 @@ jobs:
         id: parse
         run: |
           echo "USER_INPUT=${GITHUB_EVENT_COMMENT_BODY}" >> $GITHUB_ENV
+      - name: Test API key
+        run: echo "${{ secrets.OPENAI_API_KEY }}" | head -c 10
 
       - name: Generate Terraform code with AI
         env:
