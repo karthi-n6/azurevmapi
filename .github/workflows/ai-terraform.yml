@@ -6,6 +6,7 @@ on:
 
 jobs:
   ai:
+    # Only run if the comment contains /create-vm
     if: contains(github.event.comment.body, '/create-vm')
     runs-on: ubuntu-latest
 
@@ -17,7 +18,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y python3 python3-pip
-          pip3 install openai
+          pip3 install openai>=1.0.0
 
       - name: Parse comment
         id: parse
@@ -30,29 +31,30 @@ jobs:
           USER_INPUT: ${{ env.USER_INPUT }}
         run: |
           python3 << 'EOF'
-          import openai, os
+          import os
+          from openai import OpenAI
 
-          openai.api_key = os.getenv("OPENAI_API_KEY")
+          client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
           user_input = os.getenv("USER_INPUT")
 
-          # Example comment: /create-vm ubuntu 22.04 Standard_B1s
+          # Construct prompt from comment
           prompt = f"""
           The user requested: {user_input}
           Write Terraform code that adds a new Azure Ubuntu VM.
           Requirements:
           - Resource group: rg-ubuntu-vm
           - Use azurerm_linux_virtual_machine
-          - Default to ubuntu 20.04 if version not specified
+          - Default Ubuntu version: 20.04 LTS if not specified
           - Default VM size: Standard_B1s if not specified
           """
 
-          response = openai.ChatCompletion.create(
-              model="gpt-4o-mini",   # or your Azure OpenAI deployment
+          response = client.chat.completions.create(
+              model="gpt-4o-mini",  # or your Azure OpenAI deployment name
               messages=[{"role": "user", "content": prompt}],
               temperature=0.2
           )
 
-          code = response["choices"][0]["message"]["content"]
+          code = response.choices[0].message.content
 
           with open("vm.tf", "w") as f:
               f.write(code)
@@ -60,10 +62,10 @@ jobs:
           print("✅ Terraform code generated in vm.tf")
           EOF
 
-      - name: Commit changes
+      - name: Commit changes using GitHub Actions bot identity
         run: |
-          git config --global user.name "ai-bot"
-          git config --global user.email "ai-bot@github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add vm.tf
-          git commit -m "AI Bot: Add VM from issue comment"
+          git commit -m "AI Bot: Add VM from issue comment" || echo "No changes to commit"
           git push
