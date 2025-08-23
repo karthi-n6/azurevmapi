@@ -1,0 +1,28 @@
+name: OpenAI VM Request Handler
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  handle-request:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
+        run: pip install openai PyGithub
+
+      - name: Run OpenAI Request Handler
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python .github/scripts/handle_vm_request.py "${{ github.event.issue.title }}" "${{ github.event.issue.body }}"
