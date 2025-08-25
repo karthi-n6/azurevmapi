@@ -1,6 +1,5 @@
-# -------------------------
+
 # Variables
-# -------------------------
 variable "subscription_id" {
   type = string
   description = "Azure subscription id to provision infra."
