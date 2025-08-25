@@ -40,7 +40,7 @@ variable "admin_username" {
 
 variable "ssh_public_key_path" {
   description = "Path to your SSH public key"
-  default     = "~/.ssh/id_rsa.pub"
+  default     = "pub_keys/karthik.pub"
 }
 
 # -------------------------
@@ -101,7 +101,7 @@ resource "azurerm_linux_virtual_machine" "vms" {
     username   = var.admin_username
     public_key = file(var.ssh_public_key_path)
   }
-
+  
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
