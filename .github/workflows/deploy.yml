@@ -11,13 +11,12 @@ on:
    types:
       - opened
       - synchronize
-   paths-ignore:
-      - '.github/**'
  push:
-   branches:
-     - main
-   paths-ignore:
-      - '.github/**'
+    branches:
+      - main
+    paths:
+      - '**/*.tf'
+      - 'terraform.tfvars'
 jobs:
   terraform:
     name: 'Terraform'
