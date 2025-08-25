@@ -38,11 +38,6 @@ variable "admin_username" {
   default = "azureuser"
 }
 
-variable "ssh_public_key_path" {
-  description = "Path to your SSH public key"
-  default     = "pub_keys/karthik.pub"
-}
-
 # -------------------------
 # Networking
 # -------------------------
@@ -98,10 +93,10 @@ resource "azurerm_linux_virtual_machine" "vms" {
   ]
 
   admin_ssh_key {
-    username   = var.admin_username
-    public_key = file(var.ssh_public_key_path)
+    username   = "ansible"
+    public_key = file("pub_keys/karthik.pub")
   }
-  
+
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
