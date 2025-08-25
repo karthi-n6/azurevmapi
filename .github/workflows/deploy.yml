@@ -51,4 +51,5 @@ jobs:
       
     # Destroy the VM and the assisositate resources
     - name: Terraform destroy
+      if: github.event_name == 'push'
       run: terraform destroy -auto-approve -input=false
