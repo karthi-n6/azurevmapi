@@ -35,7 +35,7 @@ variable "vm_names" {
 }
 
 variable "admin_username" {
-  default = "azureuser"
+  default = "ansible"
 }
 
 # -------------------------
@@ -93,10 +93,10 @@ resource "azurerm_linux_virtual_machine" "vms" {
   ]
 
   admin_ssh_key {
-    username   = "ansible"
+    username   = var.admin_username
     public_key = file("pub_keys/karthik.pub")
   }
-
+  
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
