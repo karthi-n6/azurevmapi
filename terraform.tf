@@ -38,10 +38,10 @@ variable "admin_username" {
   default = "azureuser"
 }
 
-variable "ssh_public_key_path" {
-  description = "Path to your SSH public key"
-  default     = "~/.ssh/id_rsa.pub"
-}
+#variable "ssh_public_key_path" {
+#  description = "Path to your SSH public key"
+#  default     = "~/.ssh/id_rsa.pub"
+#}
 
 # -------------------------
 # Networking
@@ -97,11 +97,7 @@ resource "azurerm_linux_virtual_machine" "vms" {
     azurerm_network_interface.nics[each.value].id,
   ]
 
-  admin_ssh_key {
-    username   = var.admin_username
-    public_key = file(var.ssh_public_key_path)
-  }
-
+  
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
