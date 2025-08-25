@@ -13,6 +13,10 @@ on:
     paths:
       - '**/*.tf'
       - 'terraform.tfvars'
+ pull_request:
+    branches:
+      - main
+ 
 jobs:
   terraform:
     name: 'Terraform'
