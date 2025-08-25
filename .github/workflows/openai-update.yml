@@ -28,6 +28,6 @@ jobs:
       - name: Run OpenAI Request Handler
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_PAT }}
         run: |
           python .github/scripts/handle_vm_request.py "${{ github.event.issue.title }}" "${{ github.event.issue.body }}"
