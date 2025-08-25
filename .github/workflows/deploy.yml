@@ -1,22 +1,18 @@
-# This workflow installs the latest version of Terraform CLI
-# On pull request events, this workflow will run `terraform init`, `terraform fmt`, and `terraform plan`. 
-# On push events to the "master" branch, `terraform apply` will be executed.
-
-name: 'Terraform'
-
 on:
- workflow_dispatch:
- 
- push:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+  push:
     branches:
       - main
     paths:
       - '**/*.tf'
       - 'terraform.tfvars'
- pull_request:
-    branches:
-      - main
- 
+
 jobs:
   terraform:
     name: 'Terraform'
@@ -30,38 +26,29 @@ jobs:
       contents: read
       pull-requests: write
       
-    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
       run:
         shell: bash
 
     steps:
-    # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v4
 
-    # Install the latest version of Terraform CLI 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
       with:
         terraform_wrapper: false
-    
-    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+
     - name: Terraform init
       run: terraform init -backend-config "subscription_id=$TF_VAR_subscription_id" -backend-config "tenant_id=$TF_VAR_tenant_id" -backend-config "client_id=$TF_VAR_client_id" -backend-config "client_secret=$TF_VAR_client_secret"
 
-    # Checks that all Terraform configuration files adhere to a canonical format
-    #- name: Terraform Format
-    #  run: terraform fmt -check
-
-    # Generates an execution plan for Terraform
     - name: Terraform Plan
       run: terraform plan
 
-    # On push to "master", build or change infrastructure according to Terraform configuration files
     - name: Terraform Apply
+      if: github.event_name == 'push'
       run: terraform apply -auto-approve -input=false
-
+      
     # Destroy the VM and the assisositate resources
     - name: Terraform destroy
       run: terraform destroy -auto-approve -input=false
