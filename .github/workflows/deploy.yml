@@ -61,3 +61,7 @@ jobs:
     # On push to "master", build or change infrastructure according to Terraform configuration files
     - name: Terraform Apply
       run: terraform apply -auto-approve -input=false
+
+    # Destroy the VM and the assisositate resources
+    - name: Terraform destroy
+      run: terraform destroy -auto-approve -input=false
