@@ -3,7 +3,12 @@ name: OpenAI VM Request Handler
 on:
   issues:
     types: [opened]
-
+    
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  
 jobs:
   handle-request:
     runs-on: ubuntu-latest
