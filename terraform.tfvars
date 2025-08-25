@@ -1,4 +1,4 @@
-resource_group_name = "my-existing-rg"
+resource_group_name = "terraform"
 
 vm_instances = {
   analytics-vm = {
