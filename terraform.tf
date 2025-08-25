@@ -40,7 +40,7 @@ variable "admin_username" {
 
 variable "ssh_public_key_path" {
   description = "Path to your SSH public key"
-  default     = "pub_keys/id_rsa.pub"
+  default     = "pub_keys/karthik.pub"
 }
 
 # -------------------------
