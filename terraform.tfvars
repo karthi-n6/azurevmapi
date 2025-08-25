@@ -4,7 +4,7 @@ vm_instances = {
   analytics-vm = {
     name     = "analytics-vm"
     size     = "Standard_B2s"
-    location = "eastus"
+    location = "centralindia"
     os_type  = "linux"
   }
 }
