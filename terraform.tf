@@ -9,11 +9,38 @@ terraform {
 
 provider "azurerm" {
   features {}
+
+  subscription_id      =  var.subscription_id
+  tenant_id            =  var.tenant_id
+  client_id            =  var.client_id
+  client_secret        =  var.client_secret
 }
+
+
 
 # -------------------------
 # Variables
 # -------------------------
+variable "subscription_id" {
+  type = string
+  description = "Azure subscription id to provision infra."
+ }
+        
+variable "tenant_id" {
+  type = string
+  description = "Azure subscription tenant id"
+}
+    
+variable "client_id" {
+  type = string
+  description = "App id to authenticate to azure."
+}
+    
+variable "client_secret" {
+  type = string
+  description = "App password to authenticate to azure"
+}
+
 variable "location" {
   default = "eastus"
 }
